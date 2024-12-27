@@ -2,7 +2,7 @@
 #include <string.h> // strlen()
 #include <ctype.h> // islower(), isalpha()
 
-#include "keygen.h" // keygen26()
+#include "./inc/keygen.h" // keygen26()
 
 typedef char (*cryptofunc)(char, char, char, char);
 

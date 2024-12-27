@@ -2,7 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "keygen.h"
+#include "./inc/keygen.h"
 
 void encrypt(char *text, const char *key) {
     size_t size = strlen(text);
