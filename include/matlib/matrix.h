@@ -8,14 +8,6 @@ typedef struct matrix_meta {
 } Matrix;
 
 /**
- * @typedef valuefunc
- * @brief Function pointer type for generating values for matrix elements.
- *
- * This function should return a `double` value when called.
- */
-typedef double (*valuefunc)();
-
-/**
  * @brief Initializes a matrix with specified dimensions.
  *
  * Allocates memory for a matrix with the given number of rows and columns.
@@ -38,6 +30,9 @@ void matrix_free(Matrix *mat);
  */
 void matrix_show(Matrix *mat);
 
+// Function pointer type for generating values for matrix elements.
+typedef double (*valuefunc)();
+
 /**
  * @brief Fills a matrix using a callback function.
  *
@@ -46,15 +41,14 @@ void matrix_show(Matrix *mat);
  */
 void matrix_fill(Matrix *mat, valuefunc callback);
 
+// Defines a function for element-wise matrix operations.
+typedef double (*operafunc)(double a, double b);
+
 /**
- * @brief Adds two matrices.
- *
- * Performs element-wise addition of two matrices of the same dimensions.
- * 
- * @return Resulting matrix after addition.
- * @note The dimensions of `mat` and `other_mat` must match.
+ * @brief Applies an element-wise operation to two matrices.
+ * @return A new Matrix with the result of the operation.
  */
-Matrix matrix_add(Matrix *mat, Matrix *other_mat);
+Matrix matrix_op(Matrix *mat, Matrix *other_mat, operafunc op);
 
 /**
  * @brief Multiplies two matrices.
@@ -75,5 +69,19 @@ Matrix matrix_prod(Matrix *mat, Matrix *other_mat);
  * @note The matrix must be square and non-singular.
  */
 Matrix matrix_inverse(Matrix *mat);
+
+/**
+ * @breif Horizontally concatenate two matrices.
+ * 
+ * @return New concatenated matrix.
+ */
+Matrix matrix_hconcat(Matrix *mat, Matrix *other);
+
+/**
+ * @breif Vertically concatenate two matrices.
+ * 
+ * @return New concatenated matrix.
+ */
+Matrix matrix_vconcat(Matrix *mat, Matrix *other);
 
 #endif // MATRIX_H
