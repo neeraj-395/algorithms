@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "matrix.h"
+#include "../include/matlib/matrix.h"
 
 static void matrix_augment_identity(Matrix *mat, double augmented[][mat->cols * 2]) {
     for(size_t i = 0; i < mat->rows; i++) {

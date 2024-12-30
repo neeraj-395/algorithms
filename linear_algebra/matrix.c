@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "matrix.h"
+#include "../include/matlib/matrix.h"
 
 Matrix matrix_init(size_t numRow, size_t numCol) {
     if(numRow == 0 || numCol == 0) return (Matrix) {NULL, 0, 0};

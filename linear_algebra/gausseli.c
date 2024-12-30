@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "matrix.h"
+#include "../include/matlib/matrix.h"
 
 Matrix gaussian_elimination(Matrix *coefficients, Matrix *vector) {
     if(coefficients->rows != vector->rows) return (Matrix){ NULL, 0 , 0 };

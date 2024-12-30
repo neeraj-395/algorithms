@@ -2,7 +2,7 @@
 #include <string.h>
 #include <math.h>
 
-#include "./inc/matlib/matrix.h"
+#include "../include/matlib/matrix.h"
 
 Matrix genMatrixfromText(const char *txt, size_t rowdim) {
     const size_t txtlen = strlen(txt);

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "matrix.h"
+#include "../include/matlib/matrix.h"
 
 double func() {
     return rand() % 1000;
