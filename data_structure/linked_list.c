@@ -46,7 +46,7 @@ void list_remove(List *list, size_t index) {
     list->length--;
 }
 
-void list_destroy(List *list) {
+void list_clear(List *list) {
     if(!list || !list->head) return;
     Node *node = list->head;
     while(node != NULL) {
@@ -56,7 +56,7 @@ void list_destroy(List *list) {
         list->length--;
         node = list->head;
     } 
-    list->head = NULL; 
+    list->head = NULL;
     list->tail = NULL;
 }
 
@@ -74,6 +74,7 @@ int main(void) {
     printf("%d\n", *(int *)l1.head->next->data);
     printf("%d\n", *(int *)l1.tail->data);
 
-    list_destroy(&l1);
+    list_clear(&l1);
+
     return 0;
 }

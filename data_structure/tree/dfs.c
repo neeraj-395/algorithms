@@ -1,4 +1,4 @@
-#include "binary_tree.h"
+#include "node.h"
 
 void insert_left(Node *parent, double value) {
     if(!parent->left) {
@@ -6,7 +6,7 @@ void insert_left(Node *parent, double value) {
     } else {
         Node *new_node = init_node(value);
         new_node->left = parent->left;
-        parent->left = new_node;        
+        parent->left = new_node;
     }
 }
 

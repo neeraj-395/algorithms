@@ -1,6 +1,8 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+typedef unsigned long size_t;
+
 typedef struct matrix_meta {
     double **data; /** Pointer to a 2D array storing matrix elements. */
     unsigned rows; /** Number of rows in the matrix. */

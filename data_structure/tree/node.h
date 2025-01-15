@@ -1,5 +1,5 @@
-#ifndef BINARY_TREE_H
-#define BINARY_TREE_H
+#ifndef NODE_H
+#define NODE_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,7 +11,7 @@ typedef struct Node {
 } Node;
 
 Node *init_node(double value) {
-    Node *node = malloc(sizeof(Node));
+    Node *node = (Node *)malloc(sizeof(Node));
     node->value = value;
     node->left = NULL;
     node->right = NULL;
@@ -25,4 +25,4 @@ void destroy_tree(Node *root) {
     free(root);
 }
 
-#endif // BINARY_TREE_H
+#endif // NODE_H
