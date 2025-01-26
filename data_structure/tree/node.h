@@ -10,12 +10,19 @@ typedef struct Node {
     struct Node *right;
 } Node;
 
-Node *init_node(double value) {
+Node *create_node(double value) {
     Node *node = (Node *)malloc(sizeof(Node));
-    node->value = value;
     node->left = NULL;
     node->right = NULL;
+    node->value = value;
     return node;
+}
+
+void print_tree(Node *root) {
+    if(root == NULL) return;
+    print_tree(root->left);
+    print_tree(root->right);
+    printf("%.2f ", root->value);
 }
 
 void destroy_tree(Node *root) {

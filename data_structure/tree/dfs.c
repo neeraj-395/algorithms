@@ -2,9 +2,9 @@
 
 void insert_left(Node *parent, double value) {
     if(!parent->left) {
-        parent->left = init_node(value);
+        parent->left = create_node(value);
     } else {
-        Node *new_node = init_node(value);
+        Node *new_node = create_node(value);
         new_node->left = parent->left;
         parent->left = new_node;
     }
@@ -12,9 +12,9 @@ void insert_left(Node *parent, double value) {
 
 void insert_right(Node *parent, double value) {
     if(!parent->right) {
-        parent->right = init_node(value);
+        parent->right = create_node(value);
     } else {
-        Node *new_node = init_node(value);
+        Node *new_node = create_node(value);
         new_node->right = parent->right;
         parent->right = new_node;        
     }
@@ -43,7 +43,7 @@ void post_order(Node *root) {
 
 int main() {
 
-    Node *btree = init_node(1);
+    Node *btree = create_node(1);
     insert_left(btree, 2);
     insert_left(btree, 3);
     insert_left(btree, 4);

@@ -1,21 +1,27 @@
-#include <stdio.h>
+#ifndef QUEUE_H
+#define QUEUE_H
+
+#include <stddef.h>
 #include <stdlib.h>
 #define NAN (__builtin_nanf (""))
 
+// Node structure for the queue
 typedef struct node {
     double data;
     struct node *next;
 } Node;
 
+// Queue structure
 typedef struct queue {
     Node *head;
     Node *tail;
     size_t size;
 } Queue;
 
+// Function to add an element to the queue
 void enqueue(Queue *q, double data) 
 {
-    Node *new_node = malloc(sizeof(Node));
+    Node *new_node = (Node *) malloc(sizeof(Node));
     new_node->data = data;
     new_node->next = NULL;
 
@@ -40,15 +46,8 @@ double dequeue(Queue *q) {
     return data;
 }
 
-int main(void) {
-    Queue q = {NULL, NULL, 0};
-
-    enqueue(&q, 1);
-    enqueue(&q, 2);
-    enqueue(&q, 3);
-    enqueue(&q, 4);
-
-    while(q.size > 0) {
-        printf("%f\n", dequeue(&q));
-    }
+void queue_destroy(Queue *q) {
+    while(q->size > 0) dequeue(q);
 }
+
+#endif // QUEUE_H
