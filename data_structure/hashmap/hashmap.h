@@ -24,38 +24,38 @@ Hashmap hmap_create(unsigned num_entries) {
     };
 }
 
-void hmap_insert(Hashmap *map, const char *key, Object value) {
+void hmap_insert(Hashmap *map, const char *key, Object *value) {
     unsigned long index = hash(key, map->length);
     entry_append(&map->entries[index], key, value);
 }
 
-Object hmap_lookup(Hashmap *map, const char *key) {
-    if(!map && !map->entries) return (Object) {NULL, 0 , 0};
+Object *hmap_lookup(Hashmap *map, const char *key) {
+    if(!map || !map->entries) return NULL;
     unsigned long index = hash(key, map->length);
 
-    Entry *curr = map->entries[index].next;
+    Entry *current = map->entries[index].next;
 
-    while(curr != NULL) {
-        if(strcmp(curr->key, key) == 0) {
-            return curr->value;
-        } curr = curr->next;
-    } return (Object) {NULL, 0, 0};
+    while(current) {
+        if(strcmp(current->key, key) == 0) {
+            return current->value;
+        } current = current->next;
+    } return NULL;
 }
 
 void hmap_free(Hashmap *map) {
-    if(!map && !map->entries) return;
+    if(!map || !map->entries) return;
     for(int i=0; i < map->length; i++) {
-        entry_destroy(&map->entries[i]);
+        entry_destroy(map->entries[i].next);
     } free(map->entries);
 }
 
 void hmap_show(Hashmap *map) {
-    if(!map && !map->entries) return;
+    if(!map || !map->entries) return;
     for(int i = 0; i < map->length; i++) {
         Entry *tmp = map->entries[i].next;
-        if(!tmp) continue;
+        if(!tmp) tmp = &map->entries[i];
         printf("[%d] value: %p, key: %s, next: %p\n", 
-                 i, &tmp->value, tmp->key, tmp->next);
+                 i, tmp->value, tmp->key, tmp->next);
     }
 }
 
