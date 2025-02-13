@@ -15,7 +15,7 @@ lib: $(LIB_OBJS)
 	rm -f $(LIB_OBJS)
 
 # Build the test executable
-test: $(TEST_SRC) libmat.a
+test: $(TEST_SRC) lib
 	$(CC) $(CFLAGS) -o test $(TEST_SRC) -L. -lmat
 
 # Compile source files into object files

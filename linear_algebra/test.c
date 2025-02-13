@@ -4,7 +4,8 @@
 
 #include "../include/matrix.h"
 
-double func() {
+double func(double _) {
+    (void)_;
     return rand() % 1000;
 }
 

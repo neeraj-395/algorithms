@@ -32,7 +32,7 @@ void matrix_show(Matrix *mat) {
 void matrix_fill(Matrix *mat, valuefunc callback) {
     for(size_t i = 0; i < mat->rows; i++) {
         for(size_t j = 0; j < mat->cols; j++) {
-            matrix_set(mat, i , j, callback());
+            matrix_set(mat, i , j, callback(matrix_get(mat, i , j)));
         }
     }
 }

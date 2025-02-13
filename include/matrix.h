@@ -34,7 +34,7 @@ void *matrix_free(Matrix *mat);
 void matrix_show(Matrix *mat);
 
 // Function pointer type for generating values for matrix elements.
-typedef double (*valuefunc)();
+typedef double (*valuefunc)(double value);
 
 /**
  * Populates the matrix elements by calling the provided callback function.
