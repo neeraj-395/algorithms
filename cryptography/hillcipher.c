@@ -1,51 +1,39 @@
 #include <stdio.h>
-#include <string.h>
+#include <ctype.h>
 #include <math.h>
 
-#include "../include/matlib/matrix.h"
+#include "../include/matrix.h"
 
-Matrix genMatrixfromText(const char *txt, size_t rowdim) {
-    const size_t txtlen = strlen(txt);
-    const size_t coldim = ceil((float)txtlen / (float)rowdim);
+Matrix *str_matrix(const char *str, int rows, int cols) {
+    Matrix *strmat = matrix_init(rows, cols);
 
-    Matrix txtMatrix = matrix_init(rowdim, coldim);
-
-    for(size_t i = 0, t = 0; i < rowdim; i++) {
-        for(size_t j = 0; j < coldim; j++) {
-            if(t <= txtlen) txtMatrix.data[i][j] = txt[t++];
-        }
-    } return txtMatrix;
-}
-
-char encrypt(char *plaintext, const char *key) {
-    size_t txtlen = strlen(key);
-    size_t keyRowDim = ceil(sqrt(txtlen));
-
-    Matrix keyMatrix = genMatrixfromText(key, keyRowDim);
-    Matrix txtMatrix = genMatrixfromText(plaintext, keyMatrix.cols);
-
-    Matrix product = matrix_prod(&keyMatrix, &txtMatrix);
-
-    for(size_t i = 0, k = 0; i < product.rows; i++) {
-        for(size_t j = 0; j < product.cols; j++) {
-            if(k <= txtlen)
-            plaintext[k++] = (char)((int)product.data[i][j] % 256);
+    for(int i = 0; i < rows; i++) {
+        for(int j = 0; j < cols; j++) {
+            if(!str) continue;
+            char c = *(str++);
+            if(isalpha(c)) matrix_set(strmat, i, j, c);
         }
     }
-    matrix_free(&keyMatrix);
-    matrix_free(&txtMatrix);
-    matrix_free(&product);
+    return strmat;
 }
-
-
 
 int main(void) {
 
-    char key[] = {"Nsinghh.04@gmail.com"};
-    char text[] = {"I use arch byy the way!"};
+    char key[] = "Nsinghh.04@gmail.com";
+    int keydim = ceil(sqrt(sizeof(key)));
+    char text[] = "I use arch byy the way!";
+    int textdim = ceil(sizeof(text) / (float)keydim);
 
-   encrypt(text, key);
+    Matrix *key_matrix = str_matrix(key, keydim, keydim);
+    Matrix *text_matrix = str_matrix(text, keydim, textdim);
 
-   printf("%s\n", text);
+    Matrix *product = matrix_prod(key_matrix, text_matrix);
+
+    matrix_show(product);
+
+    matrix_free(key_matrix);
+    matrix_free(text_matrix);
+    matrix_free(product);
+
     return 0;
 }

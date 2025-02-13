@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "../include/matlib/matrix.h"
+#include "../include/matrix.h"
 
 static void matrix_augment_identity(Matrix *mat, double augmented[][mat->cols * 2]) {
     for(size_t i = 0; i < mat->rows; i++) {
         for(size_t j = 0; j < mat->cols; j++) {
-            augmented[i][j] = mat->data[i][j];
+            augmented[i][j] = matrix_get(mat, i , j);
         }
         for(size_t k = mat->cols; k < (mat->cols * 2); k++) {
             augmented[i][k] = (k - mat->cols == i) ? 1.0 : 0.0;
@@ -14,8 +14,8 @@ static void matrix_augment_identity(Matrix *mat, double augmented[][mat->cols * 
     }
 }
 
-Matrix matrix_inverse(Matrix *mat) {
-    if(!mat || mat->cols != mat->rows) return (Matrix) {NULL, 0, 0};
+Matrix *matrix_inverse(Matrix *mat) {
+    if(!mat || mat->cols != mat->rows) return NULL;
 
     double augmented[mat->rows][mat->cols * 2];
 
@@ -40,30 +40,28 @@ Matrix matrix_inverse(Matrix *mat) {
         // Make pivot element 1
         double pivot_element = augmented[i][i];
 
-        if(fabs(pivot_element) < 1e-6) {
-            // Matrix is singular (no inverse)
-            return (Matrix){ NULL, 0, 0 };
-        }
+         // Matrix is singular (no inverse)
+        if(fabs(pivot_element) < 1e-6) return NULL;
 
         for(size_t j = 0; j < mat->cols * 2; j++) {
             augmented[i][j] /= pivot_element;
         }
 
         // Eliminate other elements in the column
-        for (int j = 0; j < mat->rows; j++) {
+        for (size_t j = 0; j < mat->rows; j++) {
             if (j == i) continue;
             double factor = augmented[j][i];
-            for (int k = 0; k < mat->cols * 2; k++) {
+            for (size_t k = 0; k < mat->cols * 2; k++) {
                 augmented[j][k] -= factor * augmented[i][k];
             }
         }
     }
 
     // Obtain inverse matrix!
-    Matrix result = matrix_init(mat->rows, mat->cols);
+    Matrix *result = matrix_init(mat->rows, mat->cols);
     for(size_t i = 0; i < mat->rows; i++) {
         for(size_t j = 0; j < mat->cols; j++) {
-            result.data[i][j] = augmented[i][j + mat->cols];
+            matrix_set(result, i , j, augmented[i][j + mat->cols]);
         }
     } return result;
 }

@@ -1,29 +1,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../include/matlib/matrix.h"
+#include "../include/matrix.h"
 
-Matrix matrix_init(size_t numRow, size_t numCol) {
-    if(numRow == 0 || numCol == 0) return (Matrix) {NULL, 0, 0};
-    double **data = (double **) calloc(numRow, sizeof(double *));
-
-    for(size_t i = 0; i < numRow; i++) {
-        data[i] = (double *) calloc(numCol, sizeof(double));
-    } return (Matrix) {data, numRow, numCol};
+Matrix *matrix_init(size_t rows, size_t cols) {
+    if(!rows || !cols) return NULL;
+    Matrix *mat = malloc(sizeof(Matrix));
+    mat->data = calloc(rows * cols, sizeof(double));
+    mat->rows = rows; mat->cols = cols;
+    return mat;
 }
 
-void matrix_free(Matrix *mat) {
-    if(!mat || !mat->data) return;
-    for(size_t i = 0; i < mat->rows; i++) {
-        free(mat->data[i]);
-    }  free(mat->data); mat->data = NULL;
+void *matrix_free(Matrix *mat) {
+    if(!mat) return NULL;
+    if(mat->data) free(mat->data);
+    free(mat); return NULL;
 }
 
 void matrix_show(Matrix *mat) {
-    if(!mat->data) {  printf("Matrix has no data to show!\n"); return; }
+    if(!mat || !mat->data) {  
+        printf("Matrix has no data to show!\n"); 
+        return; 
+    }
     for(size_t i = 0; i < mat->rows; i++) {
         for(size_t j = 0; j < mat->cols; j++) {
-            printf("\t%f", mat->data[i][j]);
+            printf("%f\t", matrix_get(mat, i , j));
         } printf("\n");
     } printf("\n");
 }
@@ -31,64 +32,59 @@ void matrix_show(Matrix *mat) {
 void matrix_fill(Matrix *mat, valuefunc callback) {
     for(size_t i = 0; i < mat->rows; i++) {
         for(size_t j = 0; j < mat->cols; j++) {
-            mat->data[i][j] = callback();
+            matrix_set(mat, i , j, callback());
         }
     }
 }
 
-Matrix matrix_op(Matrix *mat, Matrix *other_mat, operafunc __op) {
-    if(!mat || !other_mat || mat->cols != other_mat->cols
-        || mat->rows != other_mat->rows) {
-        return (Matrix) {NULL, 0, 0};
-    }
-    Matrix new_mat = matrix_init(mat->rows, other_mat->cols);
-    for(size_t i = 0; i < mat->rows; i++) {
-        for(size_t j = 0; j < other_mat->cols; j++) {
-            new_mat.data[i][j] = __op(mat->data[i][j], other_mat->data[i][j]);
-        }
+Matrix *matrix_op(Matrix *mat, Matrix *other, operafunc __op) {
+    if(!mat || !other || mat->cols != other->cols
+    || mat->rows != other->rows) return NULL;
+    
+    Matrix *new_mat = matrix_init(mat->rows, other->cols);
+    for(size_t i = 0; i < (mat->rows * mat->cols); i++) {
+        new_mat->data[i] = __op(mat->data[i], other->data[i]); 
     } return new_mat;
 }
 
-Matrix matrix_prod(Matrix *mat, Matrix *other_mat) {
-    if(!mat || !other_mat || mat->cols != other_mat->rows) {
-        return (Matrix) {NULL, 0, 0};
-    }
+Matrix *matrix_prod(Matrix *mat, Matrix *other) {
+    if(!mat || !other || mat->cols != other->rows) return NULL;
 
-    Matrix new_mat = matrix_init(mat->rows, other_mat->cols);
+    Matrix *new_mat = matrix_init(mat->rows, other->cols);
     for(size_t i = 0; i < mat->rows; i++) {
-        for(size_t j = 0; j < other_mat->cols; j++) {
+        for(size_t j = 0; j < other->cols; j++) {
+            double product = 0.0;
             for(size_t k = 0; k < mat->cols; k++) {
-                new_mat.data[i][j] += mat->data[i][k] * other_mat->data[k][j];
-            }
+                product += matrix_get(mat, i, k) * matrix_get(other, k, j);
+            } matrix_set(new_mat, i , j, product);
         }
     } return new_mat;
 }
 
-Matrix matrix_hconcat(Matrix *mat, Matrix *other) {
-    if(mat->rows != other->rows) return (Matrix) { NULL, 0 , 0 };
-    Matrix concatenated = matrix_init(mat->rows, mat->cols + other->cols);
+Matrix *matrix_hconcat(Matrix *mat, Matrix *other) {
+    if(!mat || !other || mat->rows != other->rows) return NULL;
+    Matrix *hconcat = matrix_init(mat->rows, mat->cols + other->cols);
 
     for(size_t i = 0; i < mat->rows; i++) {
         for(size_t j = 0; j < mat->cols; j++) {
-            concatenated.data[i][j] = mat->data[i][j];
+            matrix_set(hconcat, i , j, matrix_get(mat, i , j));
         }
         for(size_t k = 0; k < other->cols; k++) {
-            concatenated.data[i][k + mat->cols] = other->data[i][k];
+            matrix_set(hconcat, i, k + mat->cols, matrix_get(other, i, k));
         }
-    } return concatenated;
+    } return hconcat;
 }
 
-Matrix matrix_vconcat(Matrix *mat, Matrix *other) {
-    if(mat->cols != other->cols) return (Matrix) { NULL, 0 , 0 };
-    Matrix concatenated = matrix_init(mat->rows + other->rows, mat->cols);
+Matrix *matrix_vconcat(Matrix *mat, Matrix *other) {
+    if(!mat || !other || mat->rows != other->rows) return NULL;
+    Matrix *vconcat = matrix_init(mat->rows + other->rows, mat->cols);
 
     for(size_t i = 0; i < mat->cols; i++) {
         for(size_t j = 0; j < mat->rows; j++) {
-            concatenated.data[j][i] = mat->data[j][i];
+            matrix_set(vconcat, j , i, matrix_get(mat, j , i));
         }
         for(size_t k = 0; k < other->rows; k++) {
-            concatenated.data[k + mat->rows][i] = other->data[k][i];
+            matrix_set(vconcat, k + mat->rows, i, matrix_get(other, k, i));
         }
-    } return concatenated;
+    } return vconcat;
 }
-
