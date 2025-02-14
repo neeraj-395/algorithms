@@ -7,7 +7,7 @@
 typedef unsigned long size_t;
 
 typedef struct matrix_meta {
-    double  *data; /** Pointer to a one dim array storing matrix elements. */
+    double  *data; /** Matrix elements stored in 1D array. */
     unsigned rows; /** Number of rows in the matrix. */
     unsigned cols; /** Number of columns in the matrix. */
 } Matrix;
@@ -15,42 +15,38 @@ typedef struct matrix_meta {
 /**
  * Allocates memory for a matrix with the given number of rows and columns.
  * 
- * @return Matrix structure with allocated memory.
+ * @return Pointer to the created matrix.
  */
-Matrix *matrix_init(size_t rows, size_t cols);
+Matrix *matrix_create(size_t rows, size_t cols);
 
 /**
- * Frees memory allocated for a matrix.
- *
- * Releases the memory associated with the matrix, including its data array.
+ * Allocates memory for matrix and initialize it given data
+ * 
+ * @return Pointer to the initialized matrix.
  */
+Matrix *matrix_init(size_t rows, size_t cols, const double data[rows][cols]);
+
+// Frees memory allocated for a matrix.
 void *matrix_free(Matrix *mat);
 
-/**
- * Displays the contents of a matrix.
- *
- * Prints the matrix elements to the standard output in a readable format.
- */
+// Displays the contents of a matrix.
 void matrix_show(Matrix *mat);
 
-// Function pointer type for generating values for matrix elements.
-typedef double (*valuefunc)(double value);
+// Callback function used to fill matrix.
+typedef double (*matfill)(double value);
 
-/**
- * Populates the matrix elements by calling the provided callback function.
- * 
- * Each element is assigned a value returned by the callback.
- */
-void matrix_fill(Matrix *mat, valuefunc callback);
+// Function to fill matrix using a callback valuefunc.
+void matrix_fill(Matrix *mat, matfill valuefunc);
+
 
 // Defines a function for element-wise matrix operations.
-typedef double (*operafunc)(double a, double b);
+typedef double (*operation)(double a, double b);
 
 /**
  * Applies an element-wise operation to two matrices.
- * @return A new Matrix with the result of the operation.
+ * @return A new matrix with the result of the operation.
  */
-Matrix *matrix_op(Matrix *mat, Matrix *other_mat, operafunc op);
+Matrix *matrix_elementwise(Matrix *mat, Matrix *other_mat, operation func);
 
 /**
  * Computes the product of two matrices using matrix multiplication rules.

@@ -58,7 +58,7 @@ Matrix *matrix_inverse(Matrix *mat) {
     }
 
     // Obtain inverse matrix!
-    Matrix *result = matrix_init(mat->rows, mat->cols);
+    Matrix *result = matrix_create(mat->rows, mat->cols);
     for(size_t i = 0; i < mat->rows; i++) {
         for(size_t j = 0; j < mat->cols; j++) {
             matrix_set(result, i , j, augmented[i][j + mat->cols]);

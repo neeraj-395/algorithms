@@ -4,19 +4,20 @@
 
 #include "../include/matrix.h"
 
-double func(double _) {
-    (void)_;
-    return rand() % 1000;
-}
-
 int main(void) {
     srand(time(NULL));
 
-    Matrix *m1 = matrix_init(3, 3);
-    Matrix *m2 = matrix_init(3, 3);
+    Matrix *m1 = matrix_init(3, 3, (double[][3]) {
+        {1.0, 2.0, 3.0},
+        {4.0, 1.0, 6.0},
+        {7.0, 8.0, 1.0}
+    });
 
-    matrix_fill(m1, func);
-    matrix_fill(m2, func);
+    Matrix *m2 = matrix_init(3, 3, (double[][3]) {
+        {2.0, 8.0, 14.0},
+        {4.0, 10.0, 16.0},
+        {6.0, 12.0, 18.0}
+    });
 
     matrix_show(m1);
     matrix_show(m2);
